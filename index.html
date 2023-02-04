@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel = "stylesheet" href = "style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
+  <title>Frontend Mentor | Todo app</title>
+</head>
+<body>
+
+  <div class="background">
+    <div class = "first-conteiner">
+      <h1 class = "logo-text">TODO</h1>
+      <img class = "moon" src = "images/icon-moon.svg">
+      <img class = "sun" src = "images/icon-sun.svg">
+    </div>
+    <form class = "input-conteiner">
+      <span class="round"></span>
+      <input class = "new-todo-input" type = "text" name = "add-tast" placeholder="Create a new todo…">
+      <button class="add-todo">+</button>
+    </form>
+  </div>
+  <div class = "todo-conteiner">
+    <ul class="todos">
+      <li class = "li-box">
+        <label class = "list-item">
+          <input type = "checkbox" name = "checkbox" class = "checkbox" >
+          <span class = "task" checked>Jog around the park 3x</span>
+      </label>
+      <span class = "remove"><img class = "cross" src = "images/icon-cross.svg"></span>
+      </li>
+      <li class = "li-box">
+        <label class = "list-item">
+          <input type = "checkbox" name = "checkbox" class = "checkbox" >
+          <span class = "task" checked>10 minutes meditation</span>
+      </label>
+      <span class = "remove"><img class = "cross" src = "images/icon-cross.svg"></span>
+      </li>
+      <li class = "li-box">
+        <label class = "list-item">
+          <input type = "checkbox" name = "checkbox" class = "checkbox" >
+          <span class = "task" checked>Read for 1 hour</span>
+      </label>
+      <span class = "remove"><img class = "cross" src = "images/icon-cross.svg"></span>
+      </li>
+      <li class = "li-box">
+        <label class = "list-item">
+          <input type = "checkbox" name = "checkbox" class = "checkbox" >
+          <span class = "task" checked>Pick up groceries</span>
+      </label>
+      <span class = "remove"><img class = "cross" src = "images/icon-cross.svg"></span>
+      </li>
+      <li class = "li-box">
+        <label class = "list-item">
+          <input type = "checkbox" name = "checkbox" class = "checkbox" >
+          <span class = "task" checked>Complete Todo App on Frontend Mentor</span>
+      </label>
+      <span class = "remove"><img class = "cross" src = "images/icon-cross.svg"></span>
+      </li>
+    </ul>
+    <div class = "last-box" id = "last-box">
+      <div class="items-left"><span>5</span> items left</div>
+      <div class = "last-buttons-desktop">
+        <a href="#" class="filter-btns all active">All</a>
+        <a href="#" class="filter-btns live">Active</a>
+        <a href="#" class="filter-btns completed-btn">Completed</a>
+      </div>
+      <span class = "clear-complited">Clear Complited</span>
+    </div>
+  </div>
+  <div class = "last-buttons-mobile">
+    <a href="#" class="filter-btns all active">All</a>
+    <a href="#" class="filter-btns live">Active</a>
+    <a href="#" class="filter-btns completed-btn">Completed</a>
+  </div>
+  <h1 class = "last-text">Drag and drop to reorder list</h1>
+  <script src = "script.js"></script>
+</body>
+</html>
