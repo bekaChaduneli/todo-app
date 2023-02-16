@@ -76,6 +76,18 @@ newItemInput.addEventListener("keypress", (event) => {
     }
 })
 
+// function for remove todo element
+function removeTodoItem(elem) {
+    elem.remove();
+}
+
+// remove todo element
+document.querySelectorAll(".remove").forEach(item => {
+    item.addEventListener("click", (event) => {
+        removeTodoItem(event.target.parentNode.parentNode);
+    })
+})
+
 function createNewTodoItem(text) {
     event.preventDefault();
     // create todo element
@@ -91,13 +103,12 @@ function createNewTodoItem(text) {
     count = count + 1;
     todos.prepend(elem);
     updateItemsCount(count);
-
     // remove todo element
-    document.querySelectorAll(".remove").forEach(item => {
-        item.addEventListener("click", (event) => {
-            removeTodoItem(event.target.parentNode.parentNode);
-        })
+document.querySelectorAll(".remove").forEach(item => {
+    item.addEventListener("click", (event) => {
+        removeTodoItem(event.target.parentNode.parentNode);
     })
+})
 }
 
 
@@ -106,10 +117,6 @@ function updateItemsCount(number) {
     itemsLeft.innerText = number + " items left";
 }
 
-// function for remove todo element
-function removeTodoItem(elem) {
-    elem.remove();
-}
 
 // clear completed items
 clearComplited.addEventListener("click", () => {
@@ -166,4 +173,3 @@ all.addEventListener("click", () => {
         }
     });
 })
-
