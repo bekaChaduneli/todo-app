@@ -193,12 +193,8 @@ body {
     background-repeat: no-repeat;
 }
 
-.checkbox:hover {
-    border-color: 
-}
-
 .checkbox-dark {
-    background: #25273D;
+    background-color: #25273D;
     border: 1px solid #393A4B;
     aspect-ratio: 1;
     background-repeat: no-repeat;
@@ -214,12 +210,14 @@ body {
     padding-right: 20px;
     padding-top: 20px;
     padding-bottom: 20px;
+    background: #fff;
     border-bottom: 1px solid #E3E4F1;
 }
 
 .li-box-dark {
     display: flex;
     justify-content: space-between;
+    background:#25273D;
     align-items: center;
     width: 100%;
     padding-left: 20px;
@@ -290,6 +288,7 @@ body {
 }
 
 
+
 .todos {
     list-style:none;
     width: 100%;
@@ -342,7 +341,7 @@ body {
 .filter-btns {
     text-decoration: none;
     color: #9495A5;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: 700;
 }
 
@@ -379,7 +378,6 @@ body {
 }
 
 .last-buttons-desktop {
-    display: none;
     gap: 19px;
 }
 
@@ -481,6 +479,10 @@ body {
 
     .cross {
         width: 20px;
+    }
+
+    .filter-btns {
+        font-size: 14px;
     }
 
 }
