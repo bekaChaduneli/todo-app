@@ -10,6 +10,7 @@ const todoConteiner = document.querySelector(".todo-conteiner");
 const todos = document.querySelector(".todo-conteiner ul");
 const lastBox = document.querySelector(".last-box");
 const itemsLeft = document.querySelector(".items-left");
+const s = document.querySelector(".list-item");
 const lastButtonsDesktop = document.querySelector(".last-buttons-desktop");
 const lastButtonsMobile = document.querySelector(".last-buttons-mobile");
 const filterButtons = document.querySelectorAll(".filter-btns");
@@ -26,47 +27,49 @@ let count = 5;
 moon.addEventListener("click", () => {
     moon.style.display = "none";
     sun.style.display = "block";
+    li.forEach(lis => {
+        lis.classList.add("li-box-dark");
+    })
+    lastBox.classList.add("last-box-dark");
+    todoConteiner.classList.add("todo-conteiner-dark");
     document.body.style.backgroundColor = "#171823";
     background.classList.add("background-dark");
     newItemInput.classList.add("new-todo-input-dark");
     inputConteiner.style.backgroundColor = "#25273D";
     addTodoButton.classList.add("add-todo-dark");
     round.classList.add("round-dark");
-    todoConteiner.classList.add("todo-conteiner-dark");
-    li.classList.add("li-box-dark");
     checkbox.classList.add("checkbox-dark");
     remove.classList.add("remove-dark");
     taskButton.classList.add("task-dark");
     taskButton.classList.remove("task");
-    lastBox.classList.add("last-box-dark");
     clearComplited.classList.add("clear-complited-dark");
     clearComplited.classList.remove("clear-complited");
     itemsLeft.classList.add("items-left-dark");
     itemsLeft.classList.remove("items-left");
-    lastButtonsMobile.style.backgroundColor = "#25273D";
 });
 
 sun.addEventListener("click", () => {
     moon.style.display  = "block";
     sun.style.display = "none";
+    li.forEach(lis => {
+        lis.classList.remove("li-box-dark");
+    })
+    lastBox.classList.remove("last-box-dark");
+    todoConteiner.classList.remove("todo-conteiner-dark");
     document.body.style.backgroundColor = "#e6eaec";
     newItemInput.classList.remove("new-todo-input-dark");
     background.classList.remove("background-dark");
     inputConteiner.style.backgroundColor = "#fff";
     addTodoButton.classList.remove("add-todo-dark");
     round.classList.remove("round-dark");
-    todoConteiner.classList.remove("todo-conteiner-dark");
-    li.classList.remove("li-box-dark");
     checkbox.classList.remove("checkbox-dark");
     remove.classList.remove("remove-dark");
     taskButton.classList.remove("task-dark");
     taskButton.classList.add("task");
-    lastBox.classList.remove("last-box-dark");
     itemsLeft.classList.remove("items-left-dark");
     clearComplited.classList.remove("clear-complited-dark");
     clearComplited.classList.add("clear-complited");
     itemsLeft.classList.add("items-left");
-    lastButtonsMobile.style.backgroundColor = "#fff";
 });
 
 newItemInput.addEventListener("keypress", (event) => {
@@ -173,3 +176,4 @@ all.addEventListener("click", () => {
         }
     });
 })
+
