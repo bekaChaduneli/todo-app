@@ -1,4 +1,52 @@
 "use strict";
+const widget = document.getElementById("auth-widget");
+const helloUser = document.querySelector(".last-text")
+let username;
+let userId;
+
+function showLoggedIn(username) {
+    widget.innerHTML = `
+        <button class="log-button" id="logout">Logout</button>
+      `;
+
+    helloUser.innerHTML = `Hello, ${username}`
+    document
+        .getElementById("logout")
+        .addEventListener("click", function () {
+            localStorage.removeItem("token");
+            window.location.href = "/html/login.html";
+        });
+}
+
+if (localStorage.getItem("token")) {
+    fetch("http://localhost:8000/users/me/", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+    })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return res.json();
+        })
+        .then((data) => {
+            showLoggedIn(data.username);
+            username = data.username;
+            userId = data.id;
+        })
+        .catch((error) => {
+            console.error("Error", error);
+            window.location.href = "/html/login.html";
+        });
+} else {
+    window.location.href = "/html/login.html";
+}
+
+
+const addTaskForm = document.getElementById("add-task-form");
 const moon = document.querySelector(".moon");
 const sun = document.querySelector(".sun");
 const background = document.querySelector(".background");
@@ -13,21 +61,49 @@ const itemsLeft = document.querySelector(".items-left");
 const s = document.querySelector(".list-item");
 const lastButtonsDesktop = document.querySelector(".last-buttons-desktop");
 const lastButtonsMobile = document.querySelector(".last-buttons-mobile");
+const BASE_URL = "http://localhost:8000/tasks/";
 const filterButtons = document.querySelectorAll(".filter-btns");
 const all = document.querySelector(".all");
 const live = document.querySelector(".live");
 const completed = document.querySelector(".completed-btn");
 const clearComplited = document.querySelector(".clear-complited");
 const li = document.querySelectorAll(".li-box");
+const taskslist = document.getElementById("taskslist");
 const liId = document.querySelector("#li-box");
+let editing = false;
 const checkbox = document.querySelector(".checkbox");
 const remove = document.querySelectorAll(".remove");
+const countTasks = document.getElementById("tasks-variable");
 const taskButton = document.querySelector(".task");
-let count = 5;
+
+async function fetchTasks(filter) {
+    try {
+        const response = await fetch(filter.length > 0 ? BASE_URL + filter : BASE_URL, {
+            method: "GET",
+            headers: {
+                "Authorization": `Token ${localStorage.getItem("token")}`,
+            },
+        });
+        const data = await response.json();
+        const tasks = data.results;
+        let tasksListRenderString = "";
+        for (let task of tasks) {
+            tasksListRenderString += renderTaskTemplete(task);
+        }
+        taskslist.innerHTML = tasksListRenderString;
+        countTasks.innerHTML = tasks.length;
+    } catch (error) {
+        console.error("Error", error);
+        throw new Error(error);
+    }
+}
+
+fetchTasks("");
+
 moon.addEventListener("click", () => {
     moon.style.display = "none";
     sun.style.display = "block";
-    li.forEach(lis => {
+    document.querySelectorAll(".li-box").forEach(lis => {
         lis.classList.add("li-box-dark");
     })
     lastBox.classList.add("last-box-dark");
@@ -49,9 +125,9 @@ moon.addEventListener("click", () => {
 });
 
 sun.addEventListener("click", () => {
-    moon.style.display  = "block";
+    moon.style.display = "block";
     sun.style.display = "none";
-    li.forEach(lis => {
+    document.querySelectorAll(".li-box").forEach(lis => {
         lis.classList.remove("li-box-dark");
     })
     lastBox.classList.remove("last-box-dark");
@@ -72,108 +148,199 @@ sun.addEventListener("click", () => {
     itemsLeft.classList.add("items-left");
 });
 
+async function createTask(task) {
+    try {
+        const response = await fetch(BASE_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(task),
+        });
+
+        if (!response.ok) {
+            throw new Error("Error creating task");
+        }
+
+        const json = await response.json();
+        fetchTasks("");
+        return json;
+    } catch (error) {
+        console.error("Error", error);
+        throw new Error(error);
+    }
+}
+
+async function deleteTask(task_id) {
+    try {
+        await fetch(`${BASE_URL}${task_id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Token ${localStorage.getItem("token")}`,
+            },
+        });
+        countTasks.innerHTML = countTasks.value - 1;
+        return true;
+    } catch (error) {
+        console.error("Error", error);
+        throw new Error(error);
+    }
+}
+
+async function fetchTask(task_id) {
+    try {
+        const response = await fetch(`${BASE_URL}${task_id}/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Token ${localStorage.getItem("token")}`,
+            },
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Error", error);
+        throw new Error(error);
+    }
+}
+
+async function updateTask(task_id, task) {
+    try {
+        const response = await fetch(`${BASE_URL}${task_id}/`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(task),
+        });
+        const json = await response.json();
+        return json;
+    } catch (error) {
+        console.error("Error", error);
+        throw new Error(error);
+    }
+}
+
+
+function renderTaskTemplete(task) {
+    return `
+    <li class="li-box" data-task-id=${task.id}>
+     <label class = "list-item">
+         <input data-action="completed" type = "checkbox" name = "checkbox" class = "checkbox" ${task.completed && "checked"} >
+         <span class = "task" checked>${task.title}</span>
+         <button class="edit" data-action="update"> ✏️ </button>
+     </label>
+     <span data-action="delete" class = "remove"><img data-action="delete" class = "cross" src = "../images/icon-cross.svg"></span>
+    </li>
+    `;
+}
+
 newItemInput.addEventListener("keypress", (event) => {
-    if(event.charCode === 13 && newItemInput.value.length > 0){
-        createNewTodoItem(newItemInput.value);
-        newItemInput.value = '';
+    if (event.charCode === 13 && newItemInput.value.length > 0) {
+        console.log(editing);
+        if (!editing) {
+            const task = {
+                title: newItemInput.value,
+                user: userId,
+            }
+            createTask(task);
+            newItemInput.value = '';
+        } else {
+            updating();
+        }
     }
 })
 
-// function for remove todo element
-function removeTodoItem(elem) {
-    elem.remove();
+
+
+inputConteiner.addEventListener("submit", (e) => {
+    e.preventDefault();
+});
+
+async function updating() {
+    const formData = new FormData(addTaskForm);
+    console.log(newItemInput.value);
+    const task = {
+        title: newItemInput.value,
+        user: userId,
+    };
+    const task_id = formData.get("task-id");
+    await updateTask(task_id, task);
+    fetchTasks("");
+    addTaskForm.reset();
+    addTaskForm.classList.remove("editing-task");
+    editing = false;
 }
 
-// remove todo element
-document.querySelectorAll(".remove").forEach(item => {
-    item.addEventListener("click", (event) => {
-        removeTodoItem(event.target.parentNode.parentNode);
-    })
-})
-
-function createNewTodoItem(text) {
-    event.preventDefault();
-    // create todo element
-    const elem = document.createElement("li");
-    elem.classList.add("li-box");
-    elem.innerHTML = `  
-    <label class = "list-item">
-        <input type = "checkbox" name = "checkbox" class = "checkbox" >
-        <span class = "task" checked>${text}</span>
-    </label>
-    <span class = "remove"><img class = "cross" src = "images/icon-cross.svg"></span>`;
-    
-    count = count + 1;
-    todos.prepend(elem);
-    updateItemsCount(count);
-    // remove todo element
-document.querySelectorAll(".remove").forEach(item => {
-    item.addEventListener("click", (event) => {
-        removeTodoItem(event.target.parentNode.parentNode);
-    })
-})
+async function deleteAllCompletedTasks() {
+    try {
+        await fetch(`${BASE_URL}delete-completed/`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Token ${localStorage.getItem("token")}`,
+            },
+        });
+        fetchTasks("");
+    } catch (error) {
+        console.error("Error", error);
+        throw new Error(error);
+    }
 }
 
+taskslist.addEventListener("click", async (e) => {
+    const action = e.target.getAttribute("data-action");
+    if (action == "completed") {
+        const checkbox = e.target;
+        checkbox.disabled = true;
 
-// update items counter text element
-function updateItemsCount(number) {
-    itemsLeft.innerText = number + " items left";
-}
-
-
-// clear completed items
-clearComplited.addEventListener("click", () => {
-    document.querySelectorAll('.list-item input').forEach(item => {
-        if(item.checked == true) {
-            item.closest('li').remove();
+        try {
+            const li = e.target.parentNode.parentNode;
+            const task_id = li.getAttribute("data-task-id");
+            const task = await fetchTask(task_id);
+            await updateTask(task_id, { ...task, completed: !task.completed });
+            fetchTasks("");
+        } catch (error) {
+            console.error("Error", error);
+        } finally {
+            checkbox.disabled = false;
         }
-    })
-})
+    }
+    if (action == "delete") {
+        const li = e.target.parentNode.parentNode;
+        const task_id = li.getAttribute("data-task-id");
+        await deleteTask(task_id);
+        fetchTasks("");
+    } else if (action == "update") {
+        editing = true;
+        const li = e.target.parentNode.parentNode;
+        const task_id = li.getAttribute("data-task-id");
+        const task = await fetchTask(task_id);
 
-// completed button Shows only checked todos
+        const titleInputElement = document.querySelector(".new-todo-input");
+        const taskIdInputElement = document.getElementById("task-id");
+        taskIdInputElement.value = task.id;
+        titleInputElement.value = task.title;
+        addTaskForm.classList.add("editing-task");
+    }
+});
+
 completed.addEventListener("click", () => {
     all.classList.remove("active");
     live.classList.remove("active");
     completed.classList.add("active");
-    document.querySelectorAll('.list-item input').forEach(item => {
-        if(item.checked == false) {
-            item.closest('li').classList.add("hide");
-        }
-        if(item.checked == true) {
-            item.closest('li').classList.remove("hide");
-        }
-    });
+    fetchTasks("?completed=true");
 });
 
-// live button Shows only unchecked todos
 live.addEventListener("click", () => {
     all.classList.remove("active");
     live.classList.add("active");
     completed.classList.remove("active");
-    document.querySelectorAll('.list-item input').forEach(item => {
-        if(item.checked == false) {
-            item.closest('li').classList.remove("hide");
-        }
-        if(item.checked == true) {
-            item.closest('li').classList.add("hide");
-        }
-    });
+    fetchTasks("?completed=false");
 });
 
-
-
-// all button Shows all todos
 all.addEventListener("click", () => {
     all.classList.add("active");
     live.classList.remove("active");
     completed.classList.remove("active");
-    document.querySelectorAll('.list-item input').forEach(item => {
-        if(item.checked == false) {
-            item.closest('li').classList.remove("hide");
-        }
-        if(item.checked == true) {
-            item.closest('li').classList.remove("hide");
-        }
-    });
+    fetchTasks("");
 })
-

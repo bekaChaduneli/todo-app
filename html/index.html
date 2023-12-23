@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <title>Todo app</title>
+  </head>
+  <body>
+    <div class="background">
+      <div class="first-conteiner">
+        <h1 class="logo-text">TODO</h1>
+        <img class="moon" src="../images/icon-moon.svg" />
+        <img class="sun" src="../images/icon-sun.svg" />
+      </div>
+      <form id="add-task-form" class="input-conteiner">
+        <input id="task-id" type="hidden" name="task-id" value="" />
+        <span class="round"></span>
+        <input
+          class="new-todo-input"
+          type="text"
+          name="add-tast"
+          placeholder="Create a new todo…"
+        />
+      </form>
+    </div>
+    <div class="todo-conteiner">
+      <ul id="taskslist" class="todos"></ul>
+      <div class="last-box" id="last-box">
+        <div class="items-left">
+          <span id="tasks-variable">0</span> items left
+        </div>
+        <div class="last-buttons-desktop">
+          <a href="#" class="filter-btns all active">All</a>
+          <a href="#" class="filter-btns live">Active</a>
+          <a href="#" class="filter-btns completed-btn">Completed</a>
+        </div>
+      </div>
+    </div>
+    <h1 class="last-text"></h1>
+    <div id="auth-widget"></div>
+    <script src="../script.js"></script>
+  </body>
+</html>

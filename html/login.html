@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/login.css" />
+    <title>Login page</title>
+  </head>
+  <body>
+    <div id="loginContainer">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <label for="username">Username: </label>
+        <input type="text" id="username" name="username" />
+        <label for="password">Password: </label>
+        <input type="password" id="password" name="password" />
+        <input type="submit" value="Login" />
+      </form>
+      <p id="message"></p>
+      <p>Don't have an account? <a href="register.html">Register here</a>.</p>
+    </div>
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          document.getElementById("message").textContent = "Loading...";
+
+          var username = document.getElementById("username").value;
+          var password = document.getElementById("password").value;
+
+          fetch("http://localhost:8000/login/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password,
+            }),
+          })
+            .then((res) => {
+              document.getElementById("message").textContent = "";
+              if (!res.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return res.json();
+            })
+            .then((data) => {
+              localStorage.setItem("token", data.token);
+              document.getElementById("message").textContent =
+                "Successfully logged in! Redirecting...";
+
+              setTimeout(function () {
+                window.location.href = "index.html";
+              }, 1500);
+            })
+            .catch((error) => {
+              document.getElementById("message").textContent =
+                "An error occurred" + error;
+            });
+        });
+    </script>
+  </body>
+</html>
