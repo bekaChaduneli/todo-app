@@ -3,38 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/login.css" />
-    <title>Login page</title>
+    <link rel="stylesheet" href="css/register.css" />
+    <title>Register Page</title>
   </head>
   <body>
-    <div id="loginContainer">
-      <h2>Login</h2>
-      <form id="loginForm">
+    <div id="registerContainer">
+      <h2>Register New User</h2>
+      <form id="registerForm">
         <label for="username">Username: </label>
         <input type="text" id="username" name="username" />
+        <label for="email">Email: </label>
+        <input type="text" id="email" name="email" />
         <label for="password">Password: </label>
         <input type="password" id="password" name="password" />
-        <input type="submit" value="Login" />
+        <input type="submit" value="Register" />
       </form>
       <p id="message"></p>
-      <p>Don't have an account? <a href="register.html">Register here</a>.</p>
+      <p>Already have an account? <a href="login.html">Login here</a>.</p>
     </div>
     <script>
       document
-        .getElementById("loginForm")
+        .getElementById("registerForm")
         .addEventListener("submit", function (event) {
           event.preventDefault();
           document.getElementById("message").textContent = "Loading...";
 
+          var email = document.getElementById("email").value;
           var username = document.getElementById("username").value;
           var password = document.getElementById("password").value;
 
-          fetch("http://localhost:8000/login/", {
+          var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            document.getElementById("message").textContent =
+              "Please enter a valid email address.";
+            return;
+          }
+          if (password.length < 8) {
+            document.getElementById("message").textContent =
+              "Password must be at least 8 characters.";
+            return;
+          }
+
+          fetch("http://localhost:8000/users/", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
+              email: email,
               username: username,
               password: password,
             }),
@@ -47,12 +63,10 @@
               return res.json();
             })
             .then((data) => {
-              localStorage.setItem("token", data.token);
               document.getElementById("message").textContent =
-                "Successfully logged in! Redirecting...";
-
+                "User successfully registered!";
               setTimeout(function () {
-                window.location.href = "index.html";
+                window.location.href = "login.html";
               }, 1500);
             })
             .catch((error) => {
