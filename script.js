@@ -230,7 +230,7 @@ function renderTaskTemplete(task) {
          <span class = "task" checked>${task.title}</span>
          <button class="edit" data-action="update"> ✏️ </button>
      </label>
-     <span data-action="delete" class = "remove"><img data-action="delete" class = "cross" src = "../images/icon-cross.svg"></span>
+     <span data-action="delete" class = "remove"><img data-action="delete" class = "cross" src = "images/icon-cross.svg"></span>
     </li>
     `;
 }
