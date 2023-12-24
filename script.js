@@ -14,7 +14,7 @@ function showLoggedIn(username) {
         .getElementById("logout")
         .addEventListener("click", function () {
             localStorage.removeItem("token");
-            window.location.href = "login.html";
+            window.location.href = "htmls/login.html";
         });
 }
 
@@ -39,10 +39,10 @@ if (localStorage.getItem("token")) {
         })
         .catch((error) => {
             console.error("Error", error);
-            window.location.href = "login.html";
+            window.location.href = "htmls/login.html";
         });
 } else {
-    window.location.href = "login.html";
+    window.location.href = "htmls/login.html";
 }
 
 

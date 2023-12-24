@@ -3,54 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/register.css" />
-    <title>Register Page</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <title>Login page</title>
   </head>
   <body>
-    <div id="registerContainer">
-      <h2>Register New User</h2>
-      <form id="registerForm">
+    <div id="loginContainer">
+      <h2>Login</h2>
+      <form id="loginForm">
         <label for="username">Username: </label>
         <input type="text" id="username" name="username" />
-        <label for="email">Email: </label>
-        <input type="text" id="email" name="email" />
         <label for="password">Password: </label>
         <input type="password" id="password" name="password" />
-        <input type="submit" value="Register" />
+        <input type="submit" value="Login" />
       </form>
       <p id="message"></p>
-      <p>Already have an account? <a href="login.html">Login here</a>.</p>
+      <p>Don't have an account? <a href="register.html">Register here</a>.</p>
     </div>
     <script>
       document
-        .getElementById("registerForm")
+        .getElementById("loginForm")
         .addEventListener("submit", function (event) {
           event.preventDefault();
           document.getElementById("message").textContent = "Loading...";
 
-          var email = document.getElementById("email").value;
           var username = document.getElementById("username").value;
           var password = document.getElementById("password").value;
 
-          var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(email)) {
-            document.getElementById("message").textContent =
-              "Please enter a valid email address.";
-            return;
-          }
-          if (password.length < 8) {
-            document.getElementById("message").textContent =
-              "Password must be at least 8 characters.";
-            return;
-          }
-
-          fetch("http://localhost:8000/users/", {
+          fetch("http://localhost:8000/login/", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              email: email,
               username: username,
               password: password,
             }),
@@ -63,10 +47,12 @@
               return res.json();
             })
             .then((data) => {
+              localStorage.setItem("token", data.token);
               document.getElementById("message").textContent =
-                "User successfully registered!";
+                "Successfully logged in! Redirecting...";
+
               setTimeout(function () {
-                window.location.href = "login.html";
+                window.location.href = "/index.html";
               }, 1500);
             })
             .catch((error) => {
